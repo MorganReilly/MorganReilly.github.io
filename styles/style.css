@@ -1,0 +1,20 @@
+.emptyMessage {
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
+  }
+.boughtMessage {
+    font-weight: bold;
+    color: green;
+    font-size: 1.2em;
+}
+li {
+    margin-bottom: 7px;
+    font-size: 1.2em;
+  }
+li > button {
+    margin-left: 6px;
+  }
+button > span {
+    color: green;
+  }
