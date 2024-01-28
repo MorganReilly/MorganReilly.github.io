@@ -3,11 +3,11 @@
 
 /*
 To Buy List
-Declare our initial shopping list with 5 items
+Declare our initial shopping list
 */
 var SHOPPING_LIST = [
     {
-        item_name: "Milk",
+        item_name: "Litres of Milk",
         item_qty: "2"
     },
     {
@@ -15,16 +15,24 @@ var SHOPPING_LIST = [
         item_qty: "18"
     },
     {
-        item_name: "Chicken",
+        item_name: "Chicken Breasts",
         item_qty: "5"
     },
     {
-        item_name: "Rice",
+        item_name: "Bags of Rice",
         item_qty: "3"
     },
     {
-        item_name: "Coffee",
-        item_qty: "10"
+        item_name: "Jar of Coffee",
+        item_qty: "1"
+    },
+    {
+        item_name: "Loaf of Bread",
+        item_qty: "1"
+    },
+    {
+        item_name: "Bananas",
+        item_qty: "5"
     }
 ]
 
@@ -37,30 +45,30 @@ angular.module('ShoppingListCheckOff', [])
 .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
 
 // To Buy Controller - buyCtrl
-ToBuyController.$inject = ['$scope', 'ShoppingListCheckOffService'];
-function ToBuyController($scope, ShoppingListCheckOffService){
+ToBuyController.$inject = ['ShoppingListCheckOffService'];
+function ToBuyController(ShoppingListCheckOffService){
     var buyCtrl = this;
 
     // Get our to-buy shopping list from our service
-    buyCtrl.shoppingList = ShoppingListCheckOffService.getItems();
+    buyCtrl.toBuyList = ShoppingListCheckOffService.getItemsToBuy();
 
     // Bought Click
     buyCtrl.buy = function (itemIndex, itemName, itemQty) {
-        console.log("Item Clicked: ", itemIndex, itemName, itemQty)
+        console.log("buyCtrl.buy(): ", itemIndex, itemName, itemQty)
         // Remove item
         ShoppingListCheckOffService.removeItem(itemIndex, itemName, itemQty);
+        // Add item
+        ShoppingListCheckOffService.addItem(itemName, itemQty);
     }
 }
 
 // Already Bought Controller - boughtCtrl
-AlreadyBoughtController.$inject = ['$scope', 'ShoppingListCheckOffService'];
-function AlreadyBoughtController($scope, ShoppingListCheckOffService){
+AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+function AlreadyBoughtController(ShoppingListCheckOffService){
     var boughtCtrl = this;
 
-    boughtCtrl.addedList = ShoppingListCheckOffService.getItemsBought();
-
-    // Reference to service.boughtList()
-    // Can just reference the service object
+    // Get any item in the bought list
+    boughtCtrl.boughtList = ShoppingListCheckOffService.getItemsBought();
 }
 
 // Shopping List Check Off Service
@@ -68,11 +76,11 @@ function ShoppingListCheckOffService (){
     var service = this;
 
     var toBuyList = SHOPPING_LIST; // Populate our toBuyList with the hard-coded list of items
-    var boughtList = [];
+    var boughtList = []; // Empty list to populate for bought items
 
     // Get all items to buy
-    service.getItems = function () {
-        console.log("service.getItems(): ", toBuyList);
+    service.getItemsToBuy = function () {
+        console.log("service.getItemsToBuy(): ", toBuyList);
         return toBuyList;
     }
 
@@ -82,17 +90,23 @@ function ShoppingListCheckOffService (){
         return boughtList;
     }
 
-    // Remove item from buy list
-    service.removeItem = function (index, itemName, itemQty) {
-        console.log("service.removeItem(): ", index, itemName, itemQty);
-        toBuyList.splice(index, 1);
-
+    // Add an item to the bought list
+    service.addItem = function (itemName, itemQty){
         var item = {
             name: itemName,
             qty: itemQty
         };
-        console.log(item);
+        console.log("service.addItem(): ", item);
         boughtList.push(item);
+    }   
+
+    // Remove item from buy list
+    service.removeItem = function (index) {
+        console.log("service.removeItem(): ", index);
+        toBuyList.splice(index, 1);
     }
 }
 })();
+
+// Minified Code
+// !function(){"use strict";var e=[{item_name:"Litres of Milk",item_qty:"2"},{item_name:"Eggs",item_qty:"18"},{item_name:"Chicken Breasts",item_qty:"5"},{item_name:"Bags of Rice",item_qty:"3"},{item_name:"Jar of Coffee",item_qty:"1"},{item_name:"Loaf of Bread",item_qty:"1"},{item_name:"Bananas",item_qty:"5"}];function t(e){var t=this;t.toBuyList=e.getItemsToBuy(),t.buy=function(t,i,o){console.log("Item Clicked: ",t,i,o),e.removeItem(t,i,o),e.addItem(i,o)}}function i(e){var t=this;t.boughtList=e.getItemsBought()}angular.module("ShoppingListCheckOff",[]).controller("ToBuyController",t).controller("AlreadyBoughtController",i).service("ShoppingListCheckOffService",function t(){var i=this,o=e,n=[];i.getItemsToBuy=function(){return console.log("service.getItemsToBuy(): ",o),o},i.getItemsBought=function(){return console.log("service.getItemsBought():",n),n},i.addItem=function(e,t){var i={name:e,qty:t};console.log("service.addItem(): ",i),n.push(i)},i.removeItem=function(e){console.log("service.removeItem(): ",e),o.splice(e,1)}}),t.$inject=["ShoppingListCheckOffService"],i.$inject=["ShoppingListCheckOffService"]}();

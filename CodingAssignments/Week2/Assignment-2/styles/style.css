@@ -3,13 +3,18 @@
     color: red;
     font-size: 1.2em;
   }
-  li {
+.boughtMessage {
+    font-weight: bold;
+    color: green;
+    font-size: 1.2em;
+}
+li {
     margin-bottom: 7px;
     font-size: 1.2em;
   }
-  li > button {
+li > button {
     margin-left: 6px;
   }
-  button > span {
+button > span {
     color: green;
   }
