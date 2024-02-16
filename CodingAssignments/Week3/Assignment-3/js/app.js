@@ -9,11 +9,18 @@
     NarrowItDownController.$inject = ['MenuSearchService'];
     function NarrowItDownController(MenuSearchService){
         var narrowItDownCtrl = this;
+        var menuCategoryPromise = MenuSearchService.getMenuCategories();
+
+        menuCategoryPromise.then(function (response){
+            narrowItDownCtrl.menuHeaderList = response;
+        }).catch(function (error){
+            console.log("Something went wrong!");
+        });
 
         narrowItDownCtrl.narrowItDownButtonClick = function (){
-            var promise = MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm);
+            var matchedItemsPrommise = MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm);
 
-            promise.then(function (response){
+            matchedItemsPrommise.then(function (response){
                 narrowItDownCtrl.descriptionList = response;
             }).catch(function (error){
                 console.log("Something went wrong!");
@@ -30,31 +37,55 @@
                 method: "GET",
                 url: (APIBasePath + "/menu_items.json")
             }).then(function (response){
+                // getMenuHeaderItems(response.data);
                 return checkFullMenuForMatch(searchTerm, response.data);
             }).catch(function (error){
                 console.log("Something went wrong: ", error);
             });
         }
 
-        var checkFullMenuForMatch = function(searchTerm, object) {
-            var shortKeys = [];
-            var shortKeyValueObjects = [];
-            var foundMenuItemObjectMaps = new Map();
+        service.getMenuCategories = function () {
+            return $http({
+                method: "GET",
+                url: (APIBasePath + "/menu_items.json")
+            }).then(function (response){
+                return getMenuHeaderItems(response.data);
+            }).catch(function (error){
+                console.log("Something went wrong: ", error);
+            });
+        }
 
+        var getMenuHeaderItems = function(object) {
+            var shortKeys = []; // shortKeys - holds the initials of the item and also will be used as our loop size below
+            var shortKeyValueObjects = []; // shortKeyValueObjects - The object which contains data to check
+            var menuHeaderItems = [];
+
+            // Looping through the initial promise to sort out the data
+            Object.keys(object).forEach(key => {
+                shortKeys.push(key);
+                shortKeyValueObjects.push(object[key]);
+            });
+
+            for (var i = 0; i < shortKeys.length; i++){
+                console.log(shortKeyValueObjects[i].category.name.toUpperCase());
+                menuHeaderItems.push(shortKeyValueObjects[i].category.name);
+            }
+
+            return menuHeaderItems;
+        }
+
+        var checkFullMenuForMatch = function(searchTerm, object) {
+            var shortKeys = []; // shortKeys - holds the initials of the item and also will be used as our loop size below
+            var shortKeyValueObjects = []; // shortKeyValueObjects - The object which contains data to check
+            var menuItemDescriptions = [];
             console.log("Search Term: ", searchTerm); // Verify our search term has reached here to handle
 
             // TODO: Null check for search term
             if (!searchTerm == ""){
-                /*
-                Looping through the initial promise to sort out the data
-                > shortKeys - holds the initials of the item and also will be used as our loop size below
-                > shortKeyValueObjects - The object which contains data to check
-                */
+                // Looping through the initial promise to sort out the data
                 Object.keys(object).forEach(key => {
-                    var value = object[key];
-                    // console.log(`Key: ${key}, Value: ${value}`);
                     shortKeys.push(key);
-                    shortKeyValueObjects.push(value);
+                    shortKeyValueObjects.push(object[key]);
                 });
 
                 /*
@@ -69,31 +100,19 @@
                 > Printing the result to verify
                 > Return the created Map(s)
                 */
-                var menuItemDescriptions = [];
                 for (var i = 0; i < shortKeys.length; i++){
+                    console.log(shortKeyValueObjects[i].category.name.toUpperCase());
                     if (shortKeyValueObjects[i].category.name.toUpperCase().includes(searchTerm.toUpperCase())){
                         console.log("Found: ", shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
                         for (var j = 0; j < shortKeyValueObjects[i].menu_items.length; j++){
-                            menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + shortKeyValueObjects[i].menu_items[j].description); 
+                            menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + " - " + shortKeyValueObjects[i].menu_items[j].description + ". Small: $" + shortKeyValueObjects[i].menu_items[j].price_small + ". Large: $" + shortKeyValueObjects[i].menu_items[j].price_large); 
                         }
-                        // foundMenuItemObjectMaps.set(shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
-                        foundMenuItemObjectMaps.set(shortKeyValueObjects[i].category.name, menuItemDescriptions);
                     }
                 }
-
-                // for (var i = 0; i < menuItemDescriptions.length; i++){
-                //     // console.log("Description: ", menuItemDescriptions[i]);
-                // }
-
-                // for (let [key, value] of  foundMenuItemObjectMaps.entries()) {
-                //     console.log(key + " = " + value)
-                // }
-
-                return menuItemDescriptions;
-                // return foundMenuItemObjectMaps;
-            } else {
-                return "No input provided";
+                // Converting the menuItemDescriptions to a Set to remove duplicates, then returning as an Array
+                return Array.from([...new Set(menuItemDescriptions)]);
             }
+            return menuItemDescriptions;
         }
     }
 })();
