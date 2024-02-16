@@ -14,10 +14,7 @@
             var promise = MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm);
 
             promise.then(function (response){
-                console.log("Main response: ", response);
-
-
-
+                narrowItDownCtrl.descriptionList = response;
             }).catch(function (error){
                 console.log("Something went wrong!");
             });
@@ -27,87 +24,76 @@
     MenuSearchService.$inject = ['$http', 'APIBasePath'];
     function MenuSearchService($http, APIBasePath){
         var service = this;
-        var MENU_ITEMS = "/menu_items.json";
-        var CATEGORIES = "/categories.json";
 
         service.getMatchedMenuItems = function (searchTerm){
             return $http({
                 method: "GET",
-                url: (APIBasePath + MENU_ITEMS)
+                url: (APIBasePath + "/menu_items.json")
             }).then(function (response){
-                var foundMenuItemObjectMaps = checkFullMenuForMatch(searchTerm, response.data);
-                // console.log(foundMenuItemObjectMaps.size);
-
-                return foundMenuItemObjectMaps;
+                return checkFullMenuForMatch(searchTerm, response.data);
             }).catch(function (error){
                 console.log("Something went wrong: ", error);
             });
         }
 
         var checkFullMenuForMatch = function(searchTerm, object) {
-            console.log("Search Term: ", searchTerm);
-
             var shortKeys = [];
             var shortKeyValueObjects = [];
             var foundMenuItemObjectMaps = new Map();
 
-            Object.keys(object).forEach(key => {
-                var value = object[key];
-                // console.log(`Key: ${key}, Value: ${value}`);
+            console.log("Search Term: ", searchTerm); // Verify our search term has reached here to handle
 
-                shortKeys.push(key);
-                shortKeyValueObjects.push(value);
-            });
+            // TODO: Null check for search term
+            if (!searchTerm == ""){
+                /*
+                Looping through the initial promise to sort out the data
+                > shortKeys - holds the initials of the item and also will be used as our loop size below
+                > shortKeyValueObjects - The object which contains data to check
+                */
+                Object.keys(object).forEach(key => {
+                    var value = object[key];
+                    // console.log(`Key: ${key}, Value: ${value}`);
+                    shortKeys.push(key);
+                    shortKeyValueObjects.push(value);
+                });
 
-            for (var i = 0; i < shortKeys.length; i++){
-                if (shortKeyValueObjects[i].category.name.toUpperCase().includes(searchTerm.toUpperCase())){
-                    console.log("Found: ", shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
-                    foundMenuItemObjectMaps.set(shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
-                    // console.log("Found: ", foundMenuItemObjectMaps);
+                /*
+                Main loop to handle checking if the search term is in the menu
+                > Loop over the list of short keys which defines the length
+                > If the search term exists within the object body:
+                    > Add the found object to a map, which will hold the following:
+                        > Key - Category Name
+                        > Value - Menu Item Object
+                    > Both the search term and the category name is set to upper case to ease comparison
+                > Comparison is done by the .includes() method
+                > Printing the result to verify
+                > Return the created Map(s)
+                */
+                var menuItemDescriptions = [];
+                for (var i = 0; i < shortKeys.length; i++){
+                    if (shortKeyValueObjects[i].category.name.toUpperCase().includes(searchTerm.toUpperCase())){
+                        console.log("Found: ", shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
+                        for (var j = 0; j < shortKeyValueObjects[i].menu_items.length; j++){
+                            menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + shortKeyValueObjects[i].menu_items[j].description); 
+                        }
+                        // foundMenuItemObjectMaps.set(shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
+                        foundMenuItemObjectMaps.set(shortKeyValueObjects[i].category.name, menuItemDescriptions);
+                    }
                 }
+
+                // for (var i = 0; i < menuItemDescriptions.length; i++){
+                //     // console.log("Description: ", menuItemDescriptions[i]);
+                // }
+
+                // for (let [key, value] of  foundMenuItemObjectMaps.entries()) {
+                //     console.log(key + " = " + value)
+                // }
+
+                return menuItemDescriptions;
+                // return foundMenuItemObjectMaps;
+            } else {
+                return "No input provided";
             }
-            // console.log(foundMenuItemObjectMaps.size);
-            return foundMenuItemObjectMaps;
         }
-
-
-
-
-
-
-
-
-        
-
-        // /*
-        // Below code is for Menu Categories 
-        // */
-        // var getMenuCategories = function(searchTerm){
-        //     return $http({
-        //         method: "GET",
-        //         url: (APIBasePath + CATEGORIES)
-        //     }).then(function (response){
-        //         var matches = checkMenuCategoriesForMatch(searchTerm, response.data);
-        //         return matches;
-        //     }).catch(function (error){
-        //         console.log("Something went wrong: ", error);
-        //     });
-        // }
-
-        // // Check Entries
-        // var checkMenuCategoriesForMatch = function(searchTerm, list){
-        //     // searchTerm = searchTerm.toUpperCase();
-        //     // console.log("service.checkEntries()");
-
-        //     var foundShortCodes = [];
-        //     for (var i = 0; i < list.length; i++){
-        //         if (list[i].name.toUpperCase().includes(searchTerm.toUpperCase())){
-        //             console.log("Found ", list[i].name, list[i]);
-        //             foundShortCodes.push(list[i].short_name);
-        //         }
-        //     }
-        //     // console.log(foundShortCodes);
-        //     return foundShortCodes;
-        // }
     }
 })();

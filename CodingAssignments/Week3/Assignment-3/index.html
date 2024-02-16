@@ -14,18 +14,14 @@
     <h1>DATA RETRIEVAL TEST</h1>
 
     <div class="form-group">
-      <input type="text" placeholder="search term" class="form-control" ng-model="narrowItDownCtrl.searchTerm">
+      <input type="text" placeholder="search term" class="form-control" ng-model="narrowItDownCtrl.searchTerm" trim="true">
     </div>
     <div class="form-group narrow-button">
       <button class="btn btn-primary" ng-click="narrowItDownCtrl.narrowItDownButtonClick()">Narrow It Down For Me!</button>
     </div>
-
-    <!-- <div class="container">
-      <h3>Menu Items</h3>
-        <ul>
-          <li ng-repeat="category in narrowItDownCtrl.categories">{{category.name}}</li>
-        </ul>
-    </div> -->
+    <div>
+      <li ng-repeat="item in narrowItDownCtrl.descriptionList">{{item}}</li>
+    </div>
 
     <found-items found-items="...." on-remove="...."></found-items>
   </div>
