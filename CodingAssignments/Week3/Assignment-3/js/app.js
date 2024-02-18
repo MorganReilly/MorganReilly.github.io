@@ -11,13 +11,15 @@
         var narrowItDownCtrl = this;
         var menuCategoryPromise = MenuSearchService.getMenuCategories();
 
+        // Display initial menu categories
         menuCategoryPromise.then(function (response){
             narrowItDownCtrl.menuHeaderList = response;
         }).catch(function (error){
             console.log("Something went wrong!");
         });
 
-        narrowItDownCtrl.narrowItDownButtonClick = function (){
+        // Narrow it down button and search functionality
+        narrowItDownCtrl.narrowItDown = function (){
             var matchedItemsPrommise = MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm);
 
             matchedItemsPrommise.then(function (response){
@@ -26,22 +28,41 @@
                 console.log("Something went wrong!");
             });
         }
+
+        // Remove item button functionality
+        narrowItDownCtrl.removeItem = function (itemIndex) {
+            MenuSearchService.removeUnwantedItem(itemIndex);
+            console.log("itemIndex", itemIndex);
+        }
     }
 
     MenuSearchService.$inject = ['$http', 'APIBasePath'];
     function MenuSearchService($http, APIBasePath){
         var service = this;
+        var matchedItemsList = [];
+
+        service.setMatchedItemsList = function (menuMatches) {
+            matchedItemsList = menuMatches;
+        }
+
+        service.getMatchedItemsList = function () {
+            return matchedItemsList;
+        }
 
         service.getMatchedMenuItems = function (searchTerm){
             return $http({
                 method: "GET",
                 url: (APIBasePath + "/menu_items.json")
             }).then(function (response){
-                // getMenuHeaderItems(response.data);
-                return checkFullMenuForMatch(searchTerm, response.data);
+                service.setMatchedItemsList(checkFullMenuForMatch(searchTerm, response.data));
+                return service.getMatchedItemsList();
             }).catch(function (error){
                 console.log("Something went wrong: ", error);
             });
+        }
+
+        service.removeUnwantedItem = function (itemIndex) {
+            matchedItemsList.splice(itemIndex, 1);
         }
 
         service.getMenuCategories = function () {
@@ -67,10 +88,8 @@
             });
 
             for (var i = 0; i < shortKeys.length; i++){
-                console.log(shortKeyValueObjects[i].category.name.toUpperCase());
                 menuHeaderItems.push(shortKeyValueObjects[i].category.name);
             }
-
             return menuHeaderItems;
         }
 
@@ -98,14 +117,17 @@
                     > Both the search term and the category name is set to upper case to ease comparison
                 > Comparison is done by the .includes() method
                 > Printing the result to verify
-                > Return the created Map(s)
                 */
                 for (var i = 0; i < shortKeys.length; i++){
-                    console.log(shortKeyValueObjects[i].category.name.toUpperCase());
                     if (shortKeyValueObjects[i].category.name.toUpperCase().includes(searchTerm.toUpperCase())){
                         console.log("Found: ", shortKeyValueObjects[i].category.name, shortKeyValueObjects[i].menu_items);
                         for (var j = 0; j < shortKeyValueObjects[i].menu_items.length; j++){
-                            menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + " - " + shortKeyValueObjects[i].menu_items[j].description + ". Small: $" + shortKeyValueObjects[i].menu_items[j].price_small + ". Large: $" + shortKeyValueObjects[i].menu_items[j].price_large); 
+                            if (shortKeyValueObjects[i].menu_items[j].price_small === undefined){
+                                menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + " - " + shortKeyValueObjects[i].menu_items[j].description + ". Large: $" + shortKeyValueObjects[i].menu_items[j].price_large); 
+                            } else {
+                                menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + " - " + shortKeyValueObjects[i].menu_items[j].description + ". Small: $" + shortKeyValueObjects[i].menu_items[j].price_small + ". Large: $" + shortKeyValueObjects[i].menu_items[j].price_large); 
+                            }
+                            
                         }
                     }
                 }
@@ -114,5 +136,7 @@
             }
             return menuItemDescriptions;
         }
+
+
     }
 })();

@@ -15,7 +15,7 @@
 
     <div class="col-md-10">
       <h2>Search for anything from the menu categories to narrow down your menu choice</h2>
-      <h4>For example: "Veg" / "Noodle" / "erts"</h4>
+      <h4>For example: "Chicken" / "Veg" / "Noodle" / "erts"</h4>
     </div>
     <div class="col-md-10">
       <h3>Menu Categories</h3>
@@ -27,13 +27,18 @@
       <input type="text" placeholder="search term" class="form-control" ng-model="narrowItDownCtrl.searchTerm" trim="true">
     </div>
     <div class="form-group narrow-button">
-      <button class="btn btn-primary" ng-click="narrowItDownCtrl.narrowItDownButtonClick()">Narrow It Down For Me!</button>
+      <button class="btn btn-primary" ng-click="narrowItDownCtrl.narrowItDown()">Narrow It Down For Me!</button>
     </div>
     <div class="col-md-10">
-      <div ng-if="narrowItDownCtrl.descriptionList.length === 0" class="emptyMessage">Please enter something to search!</div>
+      <div ng-if="narrowItDownCtrl.descriptionList.length === 0" class="emptyMessage">Nothing Found!</div>
       <h3>Search Returned</h3>
         <ol>
-          <li ng-repeat="item in narrowItDownCtrl.descriptionList">{{item}}</li>
+          <li ng-repeat="item in narrowItDownCtrl.descriptionList">
+            {{item}}
+            <button class="btn btn-default" ng-click="narrowItDownCtrl.removeItem($index)">Don't want this one!</button>
+            <br>
+          </li>
+          
         </ol>
     </div>
 
