@@ -10,39 +10,41 @@
   </head>
 <body>
   <div class="container" ng-controller="NarrowItDownController as narrowItDownCtrl">
-    <h1>Narrow Down Your Chinese Menu Choice</h1>
-    <!-- <h1>DATA RETRIEVAL TEST</h1> -->
+    <!-- <h1>Narrow Down Your Chinese Menu Choice</h1> -->
+    <h1>DATA RETRIEVAL TEST</h1>
 
+    <!-- PAGE INFO -->
     <div class="col-md-10">
       <h2>Search for anything from the menu categories to narrow down your menu choice</h2>
       <h4>For example: "Chicken" / "Veg" / "Noodle" / "erts"</h4>
     </div>
+
+    <!-- MENU CATEGORIES -->
     <div class="col-md-10">
       <h3>Menu Categories</h3>
-        <ol>
-          <li ng-repeat="item in narrowItDownCtrl.menuHeaderList">{{item}}</li>
-        </ol>
+      <ol>
+        <menu-category-items ng-repeat="item in narrowItDownCtrl.menuHeaderList"></menu-category-items>
+      </ol>
     </div>
+
+    <!-- SEARCH TERM INPUT -->
     <div class="form-group">
       <input type="text" placeholder="search term" class="form-control" ng-model="narrowItDownCtrl.searchTerm" trim="true">
     </div>
+
+    <!-- NARROW IT DOWN BUTTON -->
     <div class="form-group narrow-button">
       <button class="btn btn-primary" ng-click="narrowItDownCtrl.narrowItDown()">Narrow It Down For Me!</button>
     </div>
-    <div class="col-md-10">
-      <div ng-if="narrowItDownCtrl.descriptionList.length === 0" class="emptyMessage">Nothing Found!</div>
-      <h3>Search Returned</h3>
-        <ol>
-          <li ng-repeat="item in narrowItDownCtrl.descriptionList">
-            {{item}}
-            <button class="btn btn-default" ng-click="narrowItDownCtrl.removeItem($index)">Don't want this one!</button>
-            <br>
-          </li>
-          
-        </ol>
-    </div>
 
-    <found-items found-items="...." on-remove="...."></found-items>
+    <!-- FOUND ITEMS -->
+    <div class="col-md-10">
+      <div ng-if="narrowItDownCtrl.found.length === 0" class="emptyMessage">Nothing Found!</div>
+      <h3>Search Returned</h3>
+      <ol>
+        <found-items ng-repeat="item in narrowItDownCtrl.found"></found-items>
+      </ol>
+    </div>
   </div>
 
 </body>

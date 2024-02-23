@@ -4,15 +4,40 @@
     angular.module('NarrowItDownApp', [])
     .controller('NarrowItDownController', NarrowItDownController)
     .service('MenuSearchService', MenuSearchService)
-    .constant('APIBasePath', "https://coursera-jhu-default-rtdb.firebaseio.com");
+    .constant('APIBasePath', "https://coursera-jhu-default-rtdb.firebaseio.com")
+    .factory('MenuSearchFactory', MenuSearchFactory)
+    .directive('listItems', ListItems)
+    .directive('foundItems', FoundItems)
+    .directive('menuCategoryItems', MenuCategoryItems);
+
+    function ListItems() {
+        var ddo = {
+            template: '{{item}}'
+        };
+        return ddo;
+    }
+
+    function FoundItems() {
+        var ddo = {
+            templateUrl: 'foundItems.html'
+        };
+        return ddo;
+    }
+
+    function MenuCategoryItems() {
+        var ddo = {
+            templateUrl: 'menuCategoryItems.html'
+        };
+        return ddo;
+    }
+
 
     NarrowItDownController.$inject = ['MenuSearchService'];
     function NarrowItDownController(MenuSearchService){
         var narrowItDownCtrl = this;
-        var menuCategoryPromise = MenuSearchService.getMenuCategories();
-
-        // Display initial menu categories
-        menuCategoryPromise.then(function (response){
+        
+        // Display initial menu categories - Retrieval wrapped in a promise
+        MenuSearchService.getMenuCategories().then(function (response){
             narrowItDownCtrl.menuHeaderList = response;
         }).catch(function (error){
             console.log("Something went wrong!");
@@ -20,10 +45,10 @@
 
         // Narrow it down button and search functionality
         narrowItDownCtrl.narrowItDown = function (){
-            var matchedItemsPrommise = MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm);
-
-            matchedItemsPrommise.then(function (response){
-                narrowItDownCtrl.descriptionList = response;
+            // Retrieval wrapped in a promise
+            MenuSearchService.getMatchedMenuItems(narrowItDownCtrl.searchTerm).then(function (response){
+                // Store result of response in property called 'found' attached to the controller instance
+                narrowItDownCtrl.found = response;
             }).catch(function (error){
                 console.log("Something went wrong!");
             });
@@ -32,7 +57,7 @@
         // Remove item button functionality
         narrowItDownCtrl.removeItem = function (itemIndex) {
             MenuSearchService.removeUnwantedItem(itemIndex);
-            console.log("itemIndex", itemIndex);
+            console.log("Removed item at index: ", itemIndex);
         }
     }
 
@@ -49,6 +74,10 @@
             return matchedItemsList;
         }
 
+        service.removeUnwantedItem = function (itemIndex) {
+            matchedItemsList.splice(itemIndex, 1);
+        }
+
         service.getMatchedMenuItems = function (searchTerm){
             return $http({
                 method: "GET",
@@ -59,10 +88,6 @@
             }).catch(function (error){
                 console.log("Something went wrong: ", error);
             });
-        }
-
-        service.removeUnwantedItem = function (itemIndex) {
-            matchedItemsList.splice(itemIndex, 1);
         }
 
         service.getMenuCategories = function () {
@@ -127,16 +152,21 @@
                             } else {
                                 menuItemDescriptions.push(shortKeyValueObjects[i].menu_items[j].name + " - " + shortKeyValueObjects[i].menu_items[j].description + ". Small: $" + shortKeyValueObjects[i].menu_items[j].price_small + ". Large: $" + shortKeyValueObjects[i].menu_items[j].price_large); 
                             }
-                            
                         }
                     }
                 }
-                // Converting the menuItemDescriptions to a Set to remove duplicates, then returning as an Array
+                // Converting the menuItemDescriptions to a Set to remove duplicates, then returning as an Array for ease of iteration
                 return Array.from([...new Set(menuItemDescriptions)]);
             }
             return menuItemDescriptions;
         }
+    }
 
+    function MenuSearchFactory() {
+        var factory = function ($http, APIBasePath) {
+            return new MenuSearchService($http, APIBasePath);
+        };
 
+        return factory;
     }
 })();
