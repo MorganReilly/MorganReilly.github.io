@@ -23,7 +23,8 @@
     <div class="col-md-10">
       <h3>Menu Categories</h3>
       <ol>
-        <menu-category-items ng-repeat="item in narrowItDownCtrl.menuHeaderList"></menu-category-items>
+        <menu-category-items ng-repeat="item in narrowItDownCtrl.menuHeaderList"></menu-category-items> <!--As Element-->
+        <!-- <li menu-category-items ng-repeat="item in narrowItDownCtrl.menuHeaderList"></li> --> <!--As Attribute-->
       </ol>
     </div>
 
@@ -39,11 +40,11 @@
 
     <!-- FOUND ITEMS -->
     <div class="col-md-10">
-      <div ng-if="narrowItDownCtrl.found.length === 0" class="emptyMessage">Nothing Found!</div>
-      <h3>Search Returned</h3>
-      <ol>
-        <found-items ng-repeat="item in narrowItDownCtrl.found"></found-items>
-      </ol>
+      <found-items 
+        items="narrowItDownCtrl.found"
+        title="{{narrowItDownCtrl.title}}"
+        on-remove="narrowItDownCtrl.removeItem(index)">
+      </found-items>
     </div>
   </div>
 

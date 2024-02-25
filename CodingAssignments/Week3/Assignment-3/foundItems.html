@@ -1,5 +1,9 @@
-<li>
-    <list-items></list-items>
-    <button class="btn btn-default" ng-click="narrowItDownCtrl.removeItem($index)">Don't want this one!</button>
-    <br>
-</li>
+<div ng-if="foundItemsCtrl.items.length === 0" class="emptyMessage">Nothing Found!</div>
+<h3>{{foundItemsCtrl.title}}</h3>
+<ol>
+    <li ng-repeat="item in foundItemsCtrl.items">
+        <list-items></list-items> 
+        <button class="btn btn-default" ng-click="foundItemsCtrl.onRemove({index: $index});">Don't want this one!</button>
+        <br>
+    </li>
+</ol>
