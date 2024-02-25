@@ -1,4 +1,4 @@
 # Single Page Web Application w/ AngularJS
 Page for Coursera Course.
 
-* index.html currently displaying: Week 2 - Coding Assignment
+* index.html currently displaying: Week 3
