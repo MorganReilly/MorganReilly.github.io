@@ -1,0 +1,25 @@
+<!--
+  Author: Morgan Reilly
+  Name:   home.template.html
+  About:  Home page view
+-->
+<div class="container"  ng-controller="HomePageController as homePageCtrl">
+    <div>
+        <h2>Welcome to our Restaurant!</h2>
+        <h3><a ui-sref="categories" ui-sref-active="activeTab">Click here to view all available menu categories!</a></h3>
+    </div>
+    <div>
+        <h4>About this application</h4>
+        <h6>This application makes use of the following:</h6>
+        <ul>
+            <li class="clickable"><a ng-href="" ng-click="homePageCtrl.redirectTo('https://docs.angularjs.org/guide/component')">Components & Component-Based Architecture</a></li>
+            <li>AngularJS Event System ($onInit)</li>
+            <li class="clickable"><a ng-href="" ng-click="homePageCtrl.redirectTo('https://docs.angularjs.org/guide/module')">AngularJS Modules</a></li>
+            <li class="clickable"><a ng-href="" ng-click="homePageCtrl.redirectTo('https://docs.angularjs.org/guide/component-router')">Component Routing</a></li>
+            <li>Routing State w/ Controller</li>
+            <li class="clickable"><a ng-href="" ng-click="homePageCtrl.redirectTo('https://docs.angularjs.org/api/ngRoute/provider/$routeProvider')">Routing State w/ Resolve</a></li>
+            <li>Routing State w/ URL Params</li>
+            <li class="clickable"><a ng-href="" ng-click="homePageCtrl.redirectTo('https://ui-router.github.io/guide/transitions')">Router State Transition Events</a></li>
+        </ul>
+    </div>
+</div>
