@@ -1,20 +1,55 @@
+<!--
+  Author: Morgan Reilly
+  Name:   index.html
+  About:  Main single page html for application
+-->
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="MenuApp">
   <head>
-    <title>Week 4</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- SCRIPTS / STYLESHEETS -->
-    <script src="js/angular.min.js"></script>
-    <script src="js/app.js"></script>
-    <link rel="stylesheet" href="styles/bootstrap.min.css">
-    <link rel="stylesheet" href="styles/styles.css">
+    <title>Week 4 - MenuApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <!-- STYLESHEETS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- FAV ICON -->
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
   </head>
-<body>
-  <!-- MAIN CONTAINER W/ CONTROLLER AS SYNTAX -->
-  <div class="container">
-    <h1>Master / Detail View Pair w/ Components & ReST API Call</h1>
-    <span>Insert some html here...</span>
-  </div>
-</body>
+  <body>
+    <!-- SPINNER UI -->
+    <loading-spinner></loading-spinner>
+    
+    <!-- MAIN CONTAINER W/ CONTROLLER AS SYNTAX -->
+    <div class="container">
+      <h1>Master / Detail View Pair w/ Components & ReST API Call</h1>
+    </div>
+
+    <!-- LOAD VIEW CONTENT-->
+    <ui-view></ui-view> 
+    
+
+    <!-- LIBRARIES -->
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-ui-router.min.js"></script>
+
+    <!-- MODULES -->
+    <script src="src/menuapp/modules/menuapp.module.js"></script>
+    <script src="src/data/modules/data.module.js"></script>
+    <script src="src/spinner/modules/spinner.module.js"></script>
+
+    <!-- ROUTES -->
+    <script src="src/menuapp/routes/routes.js"></script>
+
+    <!-- 'DATA' MODULE ARTIFACTS -->
+    <script src="src/data/components/categories.component.js"></script>
+    <script src="src/data/components/items.component.js"></script>
+    <script src="src/data/services/menudata.service.js"></script>
+    <script src="src/data/controllers/main-menudata.controller.js"></script>
+    <script src="src/data/controllers/menu-item.controller.js"></script>
+
+    <!-- 'MENUAPP' MODULE ARTIFACTS -->
+    <script src="src/menuapp/controllers/home.controller.js"></script>
+
+    <!-- 'SPINNER' MODULE ARTIFACTS -->
+    <script src="src/spinner/components/loadingspinner.component.js"></script>
+  </body>
 </html>

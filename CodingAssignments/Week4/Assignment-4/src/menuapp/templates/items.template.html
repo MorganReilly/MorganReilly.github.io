@@ -1,0 +1,14 @@
+<!--
+  Author: Morgan Reilly
+  Name:   categories.template.html
+  About:  Printing out all menu item info found
+-->
+<h3>{{$ctrl.items[0].header}}</h3>
+<ul>
+    <li ng-repeat="category in $ctrl.items">
+        <h4>{{category.name}} - [{{category.short_name}}]</h4>
+        <h5>{{category.description}}</h5>
+        <h6 ng-if="category.price_small !== undefined">{{category.small_portion_name}} ${{category.price_small}}</h6>
+        <h6>{{category.large_portion_name}} ${{category.price_large}}</h6>
+    </li>
+</ul>
