@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/restaurant.css">
     <link rel="stylesheet" href="css/common.css">
+    <!-- FAV ICON -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
   </head>
   <body ng-app="restaurant" ng-strict-di>
 
@@ -42,21 +44,29 @@
 
           <div id="collapsable-nav" class="collapse navbar-collapse">
             <ul id="nav-list" class="nav navbar-nav navbar-right">
+
+              <!-- HOME -->
               <li id="navHomeButton" class="visible-xs">
                 <a href="index.html">
                   <span class="glyphicon glyphicon-home"></span> Home</a>
               </li>
+
+              <!-- MENU -->
               <li id="navMenuButton" ui-sref-active="active">
                 <a ui-sref="public.menu">
                   <span class="glyphicon glyphicon-cutlery"></span><br class="hidden-xs"> Menu</a>
               </li>
-              <li>
-                <a href="#">
-                  <span class="glyphicon glyphicon-info-sign"></span><br class="hidden-xs"> About</a>
+
+              <!-- MY INFO -->
+              <li id="infoButton" ui-sref-active="active">
+                <a ui-sref="public.info">
+                  <span class="glyphicon glyphicon-info-sign"></span><br class="hidden-xs"> My Info</a>
               </li>
-              <li>
-                <a href="#">
-                  <span class="glyphicon glyphicon-certificate"></span><br class="hidden-xs"> Awards</a>
+
+              <!-- SIGN UP -->
+              <li id="registrationButton" ui-sref-active="active">
+                <a ui-sref="public.signup">
+                  <span class="glyphicon glyphicon-certificate"></span><br class="hidden-xs"> Sign Up</a>
               </li>
               <li id="phone" class="hidden-xs">
                 <a href="tel:410-602-5008">
@@ -132,6 +142,8 @@
     <script src="src/public/menu-category/menu-category.component.js"></script>
     <script src="src/public/menu-items/menu-items.controller.js"></script>
     <script src="src/public/menu-item/menu-item.component.js"></script>
+    <script src="src/public/sign-up/signup.controller.js"></script>
+    <script src="src/public/info/info.controller.js"></script>
 
     <!-- ADMIN SITE -->
 
